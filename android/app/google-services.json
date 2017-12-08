@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "443695694357",
+    "firebase_url": "https://testreactnative-1e5dc.firebaseio.com",
+    "project_id": "testreactnative-1e5dc",
+    "storage_bucket": "testreactnative-1e5dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443695694357:android:2a6f76e05c7ff7f3",
+        "android_client_info": {
+          "package_name": "com.testreactnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443695694357-ulvd85lfocm7tln85i3llptds0iab1j9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX4aoBhnmUkCp-6WxPVz3JG0gErKs1CKQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
