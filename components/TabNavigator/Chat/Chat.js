@@ -1,34 +1,73 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, ListView, TouchableHighlight } from 'react-native';
 import ChatPartner from './ChatPartner';
 import firebase from 'react-native-firebase';
 import Row from './Row';
 
 class Chat extends React.Component {
 
+  static navigationOptions = ({ navigation }) =>  {
+    return{
+      headerRight: (
+        <Button
+            title="New Chat"
+            onPress={() => {navigation.navigate('NewChat')}}
+        />
+      )
+    }; 
+  };
+
   constructor(props) {
     super(props);
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = { 
       title: 'current User',
+      dataSource: ds.cloneWithRows(''),
     };
-  }
-  
-  static navigationOptions = {
-    title: '',
-    tabBarVisible: true,
-    header: null,
-    headerStyle: { paddingRight: 40, paddingLeft: 10 }
   }
 
   componentDidMount() {
+    var newDs = []
+
     firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
       this.setState({}, ()=> user === null ? this.props.navigation.navigate('Login'): console.log(user));
+      if (user !== null) {
+      firebase.database().ref().child('user').child(firebase.auth().currentUser.uid).child('chats').once().then((snapshot) => {
+        snapshot._childKeys.map((key) => {
+          console.log(key);
+          firebase.database().ref().child('chats').child(key).once().then((snapshot) => {
+            if (snapshot._value.messages !== undefined) {
+              console.log(snapshot)
+              newDs.push(snapshot)
+              this.setState({dataSource: this.state.dataSource.cloneWithRows(newDs)})
+            }
+            
+          })
+        }
+      )
     });
-    console.log(this.props)
+  }
+    })
  }
+
+ openChat = (data) => {
+  this.props.navigation.dispatch({
+    type: 'ReplaceCurrentScreen',
+    routeName: 'Detail',
+    key: 'Detail',
+    params: data
+});
+}
+
   render() {
     return (
       <View style={{paddingTop: 20}}>
+        <ListView
+            dataSource={this.state.dataSource}
+            enableEmptySections={true}
+            renderRow={(data) => <View style={{height: 100}}><TouchableHighlight onPress={() => this.openChat(data)}><Text>{data._value.chatName.userdata.username}</Text></TouchableHighlight></View>}
+        />
         <Row/>
         <Row/>
         <Button

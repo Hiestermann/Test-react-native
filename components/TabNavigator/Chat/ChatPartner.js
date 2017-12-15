@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat';
+import firebase from 'react-native-firebase';
 
 class ChatPartner extends React.Component {
   static navigationOptions = {
@@ -15,25 +16,25 @@ class ChatPartner extends React.Component {
 
   componentWillMount() {
     this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'Hello developer',
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
-          },
-        },
-      ],
+      messages: [],
     });
   }
 
-  onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+  componentDidMount(){
+    console.log(this.props)
+    firebase.database().ref().child('chats').child(this.props.navigation.state.params.key).child('messages').on('child_added', (snapshot) => {
+      addMessage = snapshot._value.message
+      this.setState((previousState) => ({
+      messages: GiftedChat.append(previousState.messages, addMessage),
+      }));
+    })
+  }
+
+  onSend(messages=[]) {
+    message = messages[0]
+    console.log(this.props.navigation.state.params)
+    firebase.database().ref().child('chats').child(this.props.navigation.state.params.key).child('messages').push({message})
+   
   }
 
   render() {
