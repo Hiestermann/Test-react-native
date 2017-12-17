@@ -40,7 +40,7 @@ class NewChatScreen extends React.Component {
     }
 
     openScreen = (data) => {
-        var newPostKey = firebase.database().ref().child('chats').push({chatName: data, users: { data: data}}).key;
+        var newPostKey = firebase.database().ref().child('chats').push({chatName: {users: {[data.userdata.uid]: 1, [firebase.auth().currentUser.uid]: 1 }}}).key;
         firebase.database().ref().child('user').child(firebase.auth().currentUser.uid).child('chats').update({[newPostKey]:1})
         console.log(data.userdata.uid)
         firebase.database().ref().child('user').child(data.userdata.uid).child('chats').update({[newPostKey]:1})
@@ -48,7 +48,7 @@ class NewChatScreen extends React.Component {
             type: 'ReplaceCurrentScreen',
             routeName: 'Detail',
             key: 'Detail',
-            params: newPostKey
+            params: {key: newPostKey}
         });
     }
 

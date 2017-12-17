@@ -32,7 +32,6 @@ class ChatPartner extends React.Component {
 
   onSend(messages=[]) {
     message = messages[0]
-    console.log(this.props.navigation.state.params)
     firebase.database().ref().child('chats').child(this.props.navigation.state.params.key).child('messages').push({message})
    
   }
@@ -43,7 +42,7 @@ class ChatPartner extends React.Component {
         messages={this.state.messages}
         onSend={(messages) => this.onSend(messages)}
         user={{
-          _id: 1,
+          _id: firebase.auth().currentUser.uid,
         }}
       />
     );

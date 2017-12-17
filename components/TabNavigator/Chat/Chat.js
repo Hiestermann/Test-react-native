@@ -28,19 +28,28 @@ class Chat extends React.Component {
 
   componentDidMount() {
     var newDs = []
-
+    
     firebase.auth().onAuthStateChanged((user) => {
       console.log(user);
       this.setState({}, ()=> user === null ? this.props.navigation.navigate('Login'): console.log(user));
       if (user !== null) {
-      firebase.database().ref().child('user').child(firebase.auth().currentUser.uid).child('chats').once().then((snapshot) => {
+        uid = firebase.auth().currentUser.uid
+      firebase.database().ref().child('user').child(uid).child('chats').once().then((snapshot) => {
         snapshot._childKeys.map((key) => {
-          console.log(key);
           firebase.database().ref().child('chats').child(key).once().then((snapshot) => {
             if (snapshot._value.messages !== undefined) {
-              console.log(snapshot)
-              newDs.push(snapshot)
-              this.setState({dataSource: this.state.dataSource.cloneWithRows(newDs)})
+              console.log(Object.keys(snapshot._value.chatName.users));
+              
+              Object.keys(snapshot._value.chatName.users).map((_key) =>{
+                if(_key !== uid){
+                  firebase.database().ref().child('user').child(_key).once().then((snapshot) => {
+                    userdata = snapshot._value.userdata;
+                    chat = {userdata: userdata, key: key};
+                    newDs.push(chat);
+                    this.setState({dataSource: this.state.dataSource.cloneWithRows(newDs)},() => console.log(this.state));                    
+                  })
+                }
+              })
             }
             
           })
@@ -66,7 +75,7 @@ class Chat extends React.Component {
         <ListView
             dataSource={this.state.dataSource}
             enableEmptySections={true}
-            renderRow={(data) => <View style={{height: 100}}><TouchableHighlight onPress={() => this.openChat(data)}><Text>{data._value.chatName.userdata.username}</Text></TouchableHighlight></View>}
+            renderRow={(data) => <View style={{height: 100}}><TouchableHighlight onPress={() => this.openChat(data)}><Text>{data.userdata.username}</Text></TouchableHighlight></View>}
         />
         <Row/>
         <Row/>
