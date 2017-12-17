@@ -9,7 +9,6 @@ import MainTabNavigation from './MainTabNavigator';
 import ImagePickerScreen from './ImagePickerScreen';
 import InterestsScreen from './InterestsScreen';
 import AboutyouScreen from './AboutyouScreen';
-import TestView from './TestView';
 
 
 
@@ -45,9 +44,6 @@ const App = StackNavigator({
   Aboutyou: {
     screen: AboutyouScreen
   },
-  TestView: {
-    screen: TestView
-  }
 
 }, {
   initialRouteName: 'Main',
